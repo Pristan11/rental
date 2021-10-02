@@ -38,7 +38,7 @@ const App = () => {
     return (
         <NavigationContainer theme={theme}>
             <Stack.Navigator
-                initialRouteName={'Home'}
+                initialRouteName={'Onboarding'}
             >
                 {/* Screens */}
                 <Stack.Screen
@@ -83,28 +83,44 @@ const App = () => {
                         headerStyle: {
                             backgroundColor: COLORS.white
                         },
-                        headerLeft: ({ onPress }) => (
-                            <TouchableOpacity
-                                style={{ marginLeft: SIZES.padding }}
-                                onPress={onPress}
-                            >
-                                <Image
-                                    source={icons.back}
-                                    resizeMode="contain"
-                                    style={{
-                                        width: 25,
-                                        height: 25,
-                                    }}
-                                />
-                            </TouchableOpacity>
-                        ),
+                        // headerLeft: ({ onPress }) => (
+                        //     <TouchableOpacity
+                        //         style={{ marginLeft: SIZES.padding }}
+                        //         onPress={onPress}
+                        //     >
+                        //         <Image
+                        //             source={icons.back}
+                        //             resizeMode="contain"
+                        //             style={{
+                        //                 width: 25,
+                        //                 height: 25,
+                        //             }}
+                        //         />
+                        //     </TouchableOpacity>
+                        // ),
+                        // headerRight: () => (
+                        //     <TouchableOpacity
+                        //         style={{ marginRight: SIZES.padding }}
+                        //         onPress={() => console.log("Menu")}
+                        //     >
+                        //         <Image
+                        //             source={icons.menu}
+                        //             resizeMode="contain"
+                        //             style={{
+                        //                 width: 25,
+                        //                 height: 25,
+                        //             }}
+                        //         />
+                        //     </TouchableOpacity>
+                        // ),
+                        headerLeft: null,
                         headerRight: () => (
                             <TouchableOpacity
                                 style={{ marginRight: SIZES.padding }}
-                                onPress={() => console.log("Menu")}
+                                onPress={() => console.log("Pressed")}
                             >
                                 <Image
-                                    source={icons.menu}
+                                    source={icons.barMenu}
                                     resizeMode="contain"
                                     style={{
                                         width: 25,
