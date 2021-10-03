@@ -49,25 +49,38 @@ const Home = ({ navigation }) => {
             productName: 'dell',
             rentPrice: '5000',
             location:'jaffna',
-            duration: 'month'
+            duration: 'month',
+            contactNumber: '0772551614',
+            description: 'good for building ',
+            image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=870&q=80',
+
         },
         {productOwner: 'kalistan',
             productName: 'linova',
             rentPrice: '5000',
             location:'jaffna',
-            duration: 'day'
+            duration: 'day',
+            contactNumber: '0772551614',
+            description: 'good for building ',
+            image: 'https://images.unsplash.com/photo-1553456558-aff63285bdd1?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=387&q=80'
         },
         {productOwner: 'Thanu',
             productName: 'Toshipha',
             rentPrice: '5000',
             location:'jaffna',
-            duration: 'month'
+            duration: 'month',
+            contactNumber: '0772551614',
+            description: 'good for building ',
+image: 'https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=428&q=80'
         },
         {productOwner: 'John',
             productName: 'samsung',
             rentPrice: '5000',
             location:'jaffna',
-            duration: 'week'
+            duration: 'week',
+            contactNumber: '0772551614',
+            description: 'good for building ',
+            image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=464&q=80'
         }
     ]);
     // Dummy Data
@@ -218,6 +231,7 @@ const Home = ({ navigation }) => {
                         rentPrice={num.rentPrice}
                         duration={num.duration}
                         id={index}
+                        navigation={navigation}
                         />
                     )
                 })}

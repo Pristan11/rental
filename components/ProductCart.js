@@ -10,8 +10,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { images, icons, COLORS, FONTS, SIZES } from '../constants';
 
- const ProductCart = ({productOwner, productName, rentPrice, location, data,id, duration, image })=> {
+ const ProductCart = ({productOwner, productName, rentPrice, location, data,id, duration, image,navigation })=> {
     return(
+        <TouchableOpacity  onPress={() => { navigation.navigate("DestinationDetail", {data: data}) }}>
         <View
             key={id}
             style={[{
@@ -26,8 +27,9 @@ import { images, icons, COLORS, FONTS, SIZES } from '../constants';
         >
             <View style={{ flexDirection: 'row' }}>
                 <View style={styles.shadow , {flex: 1}}>
+                    {console.log('image is ', data.image)}
                     <Image
-                        source={images.skiVilla}
+                        source={{uri: data.image}}
                         resizeMode="cover"
                         style={{
                             width: 70,
@@ -50,6 +52,7 @@ import { images, icons, COLORS, FONTS, SIZES } from '../constants';
                 </View>
             </View>
         </View>
+        </TouchableOpacity>
     )
 }
 

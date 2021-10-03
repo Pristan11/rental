@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React,{useState} from 'react';
 import {
     StyleSheet,
     View,
@@ -86,16 +86,16 @@ const IconLabel = ({ icon, label }) => {
     )
 }
 
-const DestinationDetail = ({ navigation }) => {
-
+const DestinationDetail = ({ navigation, route }) => {
+const {productOwner, productName, rentPrice, location, data,id, duration, image, description, contactNumber} = route.params.data;
     // Render
-
+    const [showContactNumber, setShowContactNumber] = useState(false);
     return (
         <View style={styles.container}>
             {/* Header */}
             <View style={{ flex: 2 }}>
                 <Image
-                    source={images.skiVillaBanner}
+                    source={{uri: image}}
                     resizeMode="cover"
                     style={{
                         width: '100%',
@@ -104,8 +104,9 @@ const DestinationDetail = ({ navigation }) => {
                 />
                 <View
                     style={[{
+
                         position: 'absolute',
-                        bottom: "5%",
+                        bottom: "-20%",
                         left: "5%",
                         right: "5%",
                         borderRadius: 15,
@@ -116,7 +117,7 @@ const DestinationDetail = ({ navigation }) => {
                     <View style={{ flexDirection: 'row' }}>
                         <View style={styles.shadow}>
                             <Image
-                                source={images.skiVilla}
+                                source={{uri: image}}
                                 resizeMode="cover"
                                 style={{
                                     width: 70,
@@ -127,8 +128,8 @@ const DestinationDetail = ({ navigation }) => {
                         </View>
 
                         <View style={{ marginHorizontal: SIZES.radius, justifyContent: 'space-around' }}>
-                            <Text style={{ ...FONTS.h3 }}>Ski Villa</Text>
-                            <Text style={{ color: COLORS.gray, ...FONTS.body3 }}>France</Text>
+                            <Text style={{ ...FONTS.h3 }}>{productName}</Text>
+                            <Text style={{ color: COLORS.gray, ...FONTS.body3 }}>{location}</Text>
 
                             <StarReview
                                 rate={4.5}
@@ -138,7 +139,7 @@ const DestinationDetail = ({ navigation }) => {
 
                     <View style={{ marginTop: SIZES.radius }}>
                         <Text style={{ color: COLORS.gray, ...FONTS.body3 }}>
-                            Ski Villa offers simple rooms with mountain views in front of the ski lift to the Ski Resort
+                            {description}
                         </Text>
                     </View>
                 </View>
@@ -186,24 +187,25 @@ const DestinationDetail = ({ navigation }) => {
             </View>
 
             {/* Body */}
-            <View style={{ flex: 1.5 }}>
+            <View style={{ flex: 1.5, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-end',
+            marginTop: '-3%'}}>
                 {/* Icons */}
-                <View style={{ flexDirection: 'row', marginTop: SIZES.base, paddingHorizontal: SIZES.padding * 2, justifyContent: 'space-between' }}>
-                    <IconLabel
-                        icon={icons.villa}
-                        label="Villa"
-                    />
+                {/*<View style={{ flexDirection: 'row', marginTop: SIZES.base, paddingHorizontal: SIZES.padding * 2, justifyContent: 'space-between' }}>*/}
+                {/*    <IconLabel*/}
+                {/*        icon={icons.villa}*/}
+                {/*        label="Villa"*/}
+                {/*    />*/}
 
-                    <IconLabel
-                        icon={icons.parking}
-                        label="Parking"
-                    />
+                {/*    <IconLabel*/}
+                {/*        icon={icons.parking}*/}
+                {/*        label="Parking"*/}
+                {/*    />*/}
 
-                    <IconLabel
-                        icon={icons.wind}
-                        label="4 °C"
-                    />
-                </View>
+                {/*    <IconLabel*/}
+                {/*        icon={icons.wind}*/}
+                {/*        label="4 °C"*/}
+                {/*    />*/}
+                {/*</View>*/}
 
                 {/* About */}
                 <View style={{ marginTop: SIZES.padding, paddingHorizontal: SIZES.padding }}>
@@ -215,21 +217,44 @@ const DestinationDetail = ({ navigation }) => {
             </View>
 
             {/* Footer */}
-            <View style={{ flex: 0.5, paddingHorizontal: SIZES.padding }}>
+            <View style={{ flex: 0.5, paddingHorizontal: SIZES.padding, marginTop: '5%' }}>
                 <LinearGradient
                     style={[{ height: 70, width: '100%', borderRadius: 15 }]}
                     colors={['#edf0fc', '#d6dfff']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                 >
+                    {showContactNumber?
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{ flex: 1, marginHorizontal: SIZES.padding, justifyContent: 'center' }}>
+                                <Text style={{ fontFamily: "Roboto-Black",fontSize: 22 }}>{contactNumber}</Text>
+                            </View>
+
+                            <TouchableOpacity
+                                style={{ width: 130, height: '80%', marginHorizontal: SIZES.radius }}
+                                onPress={() => setShowContactNumber(!showContactNumber)}
+                            >
+                                <LinearGradient
+                                    style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: 10 }]}
+                                    colors={['#46aeff', '#5884ff']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                >
+                                    <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Hide</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </View>
+
+                        :
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                         <View style={{ flex: 1, marginHorizontal: SIZES.padding, justifyContent: 'center' }}>
-                            <Text style={{ ...FONTS.h1 }}>$1000</Text>
+                            <Text style={{ fontFamily: "Roboto-Black",fontSize: 22 }}>Rs {rentPrice}
+                                <Text style={styles.durationStyle}>  /{duration}</Text></Text>
                         </View>
 
                         <TouchableOpacity
                             style={{ width: 130, height: '80%', marginHorizontal: SIZES.radius }}
-                            onPress={() => { console.log("Booking on pressed") }}
+                            onPress={() => setShowContactNumber(!showContactNumber)}
                         >
                             <LinearGradient
                                 style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: 10 }]}
@@ -237,10 +262,10 @@ const DestinationDetail = ({ navigation }) => {
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                             >
-                                <Text style={{ color: COLORS.white, ...FONTS.h2 }}>BOOKING</Text>
+                                <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Contact</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-                    </View>
+                    </View>}
                 </LinearGradient>
             </View>
         </View>
@@ -262,6 +287,10 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         elevation: 5,
+    },
+    durationStyle: {
+        fontSize: 14,
+        color: COLORS.gray
     }
 });
 
