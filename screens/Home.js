@@ -1,5 +1,5 @@
 
-import React,{useState} from 'react';
+import React,{useState,useContext} from 'react';
 import {
     StyleSheet,
     View,
@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { images, icons, COLORS, FONTS, SIZES } from '../constants';
 import ProductCart from "../components/ProductCart";
+import {FirebaseContext} from "../context/FirebaseContext";
 
 const OptionItem = ({ bgColor, icon, label, onPress }) => {
     return (
@@ -44,6 +45,8 @@ const OptionItem = ({ bgColor, icon, label, onPress }) => {
 }
 
 const Home = ({ navigation }) => {
+    const {name} = useContext(FirebaseContext)
+
     const [numbers, setNumbers] = useState([
         {productOwner: 'Ristan',
             productName: 'dell',

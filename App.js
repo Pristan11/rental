@@ -13,6 +13,8 @@ import Tabs from "./navigation/tabs";
 
 import { icons, COLORS, SIZES } from './constants';
 import { useFonts } from 'expo-font';
+import FirebaseProvider from "./context/FirebaseContext";
+import AuthProvider from "./context/AuthContext";
 
 const theme = {
     ...DefaultTheme,
@@ -139,5 +141,13 @@ const App = () => {
 };
 
 export default () => {
-    return <App />;
+    return (
+        <FirebaseProvider>
+            <AuthProvider>
+        <App />
+            </AuthProvider>
+        </FirebaseProvider>
+        )
+
+
 };
