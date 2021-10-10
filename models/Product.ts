@@ -1,20 +1,20 @@
 import {User} from './';
-import {HasMap} from '../../type';
-
+;
+export type HasMap<T> = {
+    uid: string;
+    value: T;
+}
 export interface Product {
     title: string;
     description: string;
     imageName?: string;
-    handle?: string;
-    rating?: number[];
-    options?: Option[];
-    price: number;
-    tags?: string[];
+    rentPrice: number;
     category: string;
-    shopId: string;
-    availability: boolean;
-    noPurchase: number;
     popular: boolean;
+    approved: boolean;
+    contactNumber: number;
+    duration?: string;
+    location?: string;
 }
 
 export interface Review {

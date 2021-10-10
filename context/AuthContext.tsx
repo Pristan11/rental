@@ -10,6 +10,7 @@ type AuthProps = {
     signIn: Function;
     signUp: Function;
     loginUser: LoginUser;
+    localLogin: ()=> void;
 };
 
 export const AuthContext = React.createContext({} as AuthProps);
@@ -53,7 +54,26 @@ const AuthProvider = (props: any) => {
             return lUser;
         }
     }
+    const localLogin = async (): Promise<void> => {
+        try {
+            await firebase.auth().onAuthStateChanged(async (localUser: firebase.User | null) => {
+                if (localUser) {
+                    const userSnapshot = await singleUserRef(localUser.uid).get();
+                    if (userSnapshot.exists) {
+                        const lUser = userSnapshot.data()!;
+                        lUser.uid = localUser.uid;
+                      setLoginUser(lUser);
+                    }
+                }
+            }, (error) => {
+                console.error(error.message);
 
+            });
+        } catch (e) {
+            console.error(e.message);
+
+        }
+    };
 
     const signUp = async (name , email, password, role )  => {
         try {
@@ -89,7 +109,8 @@ const AuthProvider = (props: any) => {
                 signIn,
                 signout,
                 signUp,
-                loginUser
+                loginUser,
+                localLogin
 
             }}
         >

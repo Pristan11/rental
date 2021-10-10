@@ -20,9 +20,7 @@ export const ImagePicker = (props: ImagePickerType) => {
         (async () => {
             if (Platform.OS !== 'web') {
                 const {status} = await ExpoImagePicker.requestMediaLibraryPermissionsAsync();
-                if (status !== 'granted') {
-                    alert('Sorry, we need camera roll permissions to make this work!');
-                }
+
             }
         })();
     });
@@ -45,7 +43,7 @@ export const ImagePicker = (props: ImagePickerType) => {
             <Pressable onPress={pickImage}>
                 <Image
                     source={pickerImage?{uri:pickerImage}:(initialImage?{uri: initialImage} :
-                            require('../../assets/Images/default-placeholder-image.png')
+                            require('../assets/images/ForRent.png')
                     )}
                     style={[styles.categoryImage,style]}
                 />

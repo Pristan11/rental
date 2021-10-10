@@ -1,5 +1,5 @@
 
-import React,{useState,useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
     StyleSheet,
     View,
@@ -7,13 +7,14 @@ import {
     Text,
     TouchableOpacity,
     FlatList,
-    ScrollView
+    ScrollView, Pressable, Button
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { images, icons, COLORS, FONTS, SIZES } from '../constants';
 import ProductCart from "../components/ProductCart";
 import {FirebaseContext} from "../context/FirebaseContext";
+import {Spinner} from "../components/Spinner";
 
 const OptionItem = ({ bgColor, icon, label, onPress }) => {
     return (
@@ -45,73 +46,69 @@ const OptionItem = ({ bgColor, icon, label, onPress }) => {
 }
 
 const Home = ({ navigation }) => {
-    const {name} = useContext(FirebaseContext)
 
-    const [numbers, setNumbers] = useState([
-        {productOwner: 'Ristan',
-            productName: 'dell',
-            rentPrice: '5000',
-            location:'jaffna',
-            duration: 'month',
-            contactNumber: '0772551614',
-            description: 'good for building ',
-            image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=870&q=80',
+    const {productsRef,categoriesRef} = useContext(FirebaseContext);
+    const [loading, setLoading] = useState(false);
+    const [posts, setPosts] = useState([]);
+    const [allCategories, setAllCategories] = useState([]);
 
-        },
-        {productOwner: 'kalistan',
-            productName: 'linova',
-            rentPrice: '5000',
-            location:'jaffna',
-            duration: 'day',
-            contactNumber: '0772551614',
-            description: 'good for building ',
-            image: 'https://images.unsplash.com/photo-1553456558-aff63285bdd1?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=387&q=80'
-        },
-        {productOwner: 'Thanu',
-            productName: 'Toshipha',
-            rentPrice: '5000',
-            location:'jaffna',
-            duration: 'month',
-            contactNumber: '0772551614',
-            description: 'good for building ',
-image: 'https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=428&q=80'
-        },
-        {productOwner: 'John',
-            productName: 'samsung',
-            rentPrice: '5000',
-            location:'jaffna',
-            duration: 'week',
-            contactNumber: '0772551614',
-            description: 'good for building ',
-            image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=464&q=80'
-        }
-    ]);
-    // Dummy Data
-    const [destinations, setDestinations] = React.useState([
-        {
-            id: 0,
-            name: "Ski Villa",
-            img: images.skiVilla,
-        },
-        {
-            id: 1,
-            name: "Climbing Hills",
-            img: images.climbingHills,
-        },
-        {
-            id: 2,
-            name: "Frozen Hills",
-            img: images.frozenHills,
-        },
-        {
-            id: 3,
-            name: "Beach",
-            img: images.beach,
-        },
-    ]);
+    const getPosts = async ()=> {
+        const categoriesSnapshot = await productsRef()
+            .where('approved', '==', true)
+            .get();
+        return   categoriesSnapshot.docs.map((category)=> {
+            return {uid: category.id, data: category.data()}
+        })
+    }
+    const getFilteredPosts = async (name)=> {
+        const categoriesSnapshot = await productsRef()
+            .where('category', '==', name)
+            .get();
+        return   categoriesSnapshot.docs.map((category)=> {
+            return {uid: category.id, data: category.data()}
+        })
+    }
+    const getCategories = async ()=> {
+        const categoriesSnapshot = await categoriesRef()
+            .limit(20).get();
+        return   categoriesSnapshot.docs.map((category)=> {
+            return {uid: category.id, data: category.data()}
+        })
+    }
 
-    // Render
+    useEffect(() => {
+        setLoading(true);
+        const unsubscribe = navigation.addListener('focus', ( ) => {
+            getCategories().then(res=> {
+                console.log('posts', res);
+                setAllCategories(res);
+            })
+            getPosts().then(res=> {
+                console.log('posts', res);
+                setPosts(res);
+                setLoading(false)
+            })
+        });
 
+        return unsubscribe;
+    }, [navigation]);
+
+const filteredByCategory =  (id) => {
+    setLoading(true);
+    getFilteredPosts(id).then(res=> {
+        setLoading(false);
+      setPosts(res);
+  })
+}
+
+
+const getAllPosts =async ()=> {
+    console.log('function called')
+    getPosts().then((res)=> {
+        setPosts(res);
+        setLoading(false);
+    })
+}
     function renderDestinations(item, index) {
         var destinationStyle = {};
 
@@ -122,10 +119,10 @@ image: 'https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?ixid=MnwxMj
         return (
             <TouchableOpacity
                 style={{ justifyContent: 'center', marginHorizontal: SIZES.base, ...destinationStyle }}
-                onPress={() => { navigation.navigate("DestinationDetail") }}
+                onPress={() => filteredByCategory(item.name)}
             >
                 <Image
-                    source={item.img}
+                    source={{uri: item.imageName}}
                     resizeMode="cover"
                     style={{
                         width: SIZES.width * 0.28,
@@ -138,106 +135,55 @@ image: 'https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?ixid=MnwxMj
             </TouchableOpacity>
         )
     }
-
+    if(loading){
+        return <Spinner/>
+    }
     return (
         <View style={styles.container}>
-            {/* Banner */}
-            {/*<View style={{ flex: 1, marginTop: SIZES.base, paddingHorizontal: SIZES.padding, }}>*/}
-            {/*    <Image*/}
-            {/*        source={images.homeBanner}*/}
-            {/*        resizeMode="cover"*/}
-            {/*        style={{*/}
-            {/*            width: "100%",*/}
-            {/*            height: "100%",*/}
-            {/*            borderRadius: 15,*/}
-            {/*        }}*/}
-            {/*    />*/}
-            {/*</View>*/}
-
-            {/* Options */}
-            {/*<View style={{ flex: 1, justifyContent: 'center' }}>*/}
-            {/*    <View style={{ flexDirection: 'row', marginTop: SIZES.padding, paddingHorizontal: SIZES.base }}>*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.airplane}*/}
-            {/*            bgColor={['#46aeff', '#5884ff']}*/}
-            {/*            label="Flight"*/}
-            {/*            onPress={() => { console.log("Flight") }}*/}
-            {/*        />*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.train}*/}
-            {/*            bgColor={['#fddf90', '#fcda13']}*/}
-            {/*            label="Train"*/}
-            {/*            onPress={() => { console.log("Train") }}*/}
-            {/*        />*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.bus}*/}
-            {/*            bgColor={['#e973ad', '#da5df2']}*/}
-            {/*            label="Bus"*/}
-            {/*            onPress={() => { console.log("Bus") }}*/}
-            {/*        />*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.taxi}*/}
-            {/*            bgColor={['#fcaba8', '#fe6bba']}*/}
-            {/*            label="Taxi"*/}
-            {/*            onPress={() => { console.log("Taxi") }}*/}
-            {/*        />*/}
-            {/*    </View>*/}
-
-            {/*    <View style={{ flexDirection: 'row', marginTop: SIZES.radius, paddingHorizontal: SIZES.base }}>*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.bed}*/}
-            {/*            bgColor={['#ffc465', '#ff9c5f']}*/}
-            {/*            label="Hotel"*/}
-            {/*            onPress={() => { console.log("Hotel") }}*/}
-            {/*        />*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.eat}*/}
-            {/*            bgColor={['#7cf1fb', '#4ebefd']}*/}
-            {/*            label="Eats"*/}
-            {/*            onPress={() => { console.log("Eats") }}*/}
-            {/*        />*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.compass}*/}
-            {/*            bgColor={['#7be993', '#46caaf']}*/}
-            {/*            label="Adventure"*/}
-            {/*            onPress={() => { console.log("Adventure") }}*/}
-            {/*        />*/}
-            {/*        <OptionItem*/}
-            {/*            icon={icons.event}*/}
-            {/*            bgColor={['#fca397', '#fc7b6c']}*/}
-            {/*            label="Event"*/}
-            {/*            onPress={() => { console.log("Event") }}*/}
-            {/*        />*/}
-            {/*    </View>*/}
-            {/*</View>*/}
 
             {/* Destination */}
+                <View style={{display: 'flex', flexDirection: "row", alignItems: "center", justifyContent: "space-around"}}>
+               <View>
+                <Text style={{marginLeft: 20, fontSize: 14, color: COLORS.primary,marginBottom: -25,marginTop: 10}}>Categories</Text>
+               </View>
+
+                        <View >
+                <Button
+                    style={{marginLeft: 20, fontSize: 14, color: COLORS.primary,marginTop: 10}}
+                    title='All Categories'
+                onPress={()=> getAllPosts()}
+                />
+                        </View>
+                </View>
             <View style={{ height: '25%'}}>
-                <View  style={{ height: '15%'}}/>
-                {/*<Text style={{ marginTop: SIZES.base, marginHorizontal: SIZES.padding, ...FONTS.h2 }}>Destination</Text>*/}
+                <View  style={{ height: '20%'}}/>
                 <FlatList
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    data={destinations}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({ item, index }) => renderDestinations(item, index)}
+                    data={allCategories}
+                    keyExtractor={item => item.uid.toString()}
+                    renderItem={({ item, index }) => renderDestinations(item.data, index)}
                 />
             </View>
-            <ScrollView style={{marginTop: '10%'}}>
-                {numbers.map((num, index)=> {
+            <Text style={{marginLeft: 20, fontSize: 14, color: COLORS.primary,marginBottom: -35,marginTop: 20}}>Products</Text>
+            <ScrollView style={{marginTop: '10%', marginBottom: 20}}>
+                { posts && posts.map((post, index)=> {
                     return (
                         <ProductCart
-                        data={num}
-                        productOwner={num.productOwner}
-                        productName={num.productName}
-                        location={num.location}
-                        rentPrice={num.rentPrice}
-                        duration={num.duration}
-                        id={index}
-                        navigation={navigation}
+                            data={post}
+                            productName={post.data.title}
+                            location={post.data.title}
+                            rentPrice={post.data.rentPrice}
+                            duration={post.data.duration}
+                            id={index}
+                            image={post.data.imageName}
+                            navigation={navigation}
                         />
                     )
                 })}
+                {posts.length == 0 && <View style={{display: 'flex', flexDirection: 'column', alignItems: "center", justifyContent: "center"}}>
+                    <Text style={{color: COLORS.secondary}}>No Products Available for Selected Category</Text>
+                </View>}
             </ScrollView>
         </View>
     );

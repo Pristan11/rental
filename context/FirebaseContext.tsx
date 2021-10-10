@@ -17,8 +17,8 @@ type FirebaseContextType = {
     shopRef: (uid: string) => app.firestore.DocumentReference<Shop>;
     productsRef: () => app.firestore.CollectionReference<Product>;
     productRef: (uid: string) => app.firestore.DocumentReference<Product>;
-    categoriesRef: (shopId: string) => app.firestore.CollectionReference<Category>;
-    categoryRef: (shopId: string, categoryId: string) => app.firestore.DocumentReference<Category>;
+    categoriesRef: () => app.firestore.CollectionReference<Category>;
+    categoryRef: (uid: string) => app.firestore.DocumentReference<Category>;
     imageSlidersRef: (shopId: string) => app.firestore.CollectionReference<ImageSlider>;
     imageSliderRef: (shopId: string, imageSliderId: string) => app.firestore.DocumentReference<ImageSlider>;
     ordersRef: () => app.firestore.CollectionReference<Order>;
@@ -35,7 +35,6 @@ export const FirebaseContext = createContext<FirebaseContextType>();
 const FirebaseProvider: React.FC<React.ReactNode> = ({children}) => {
     if (!app.apps.length) {
      const res = app.initializeApp(MainConfig.FirebaseConfig);
-     console.log('connecting res', res);
     }
 
     const firebases = {
@@ -49,11 +48,8 @@ const FirebaseProvider: React.FC<React.ReactNode> = ({children}) => {
         shopsRef: () => app.firestore().collection('shops'),
         productRef: (uid: string) => app.firestore().collection('products').doc(uid),
         productsRef: () => app.firestore().collection('products'),
-        categoriesRef: (shopId: string) => app.firestore().collection('shops').doc(shopId)
-            .collection('category'),
-        categoryRef: (shopId: string, categoryId: string) => app.firestore()
-            .collection('shops').doc(shopId)
-            .collection('category').doc(categoryId),
+        categoriesRef: () => app.firestore().collection('category'),
+        categoryRef: (uid: string) => app.firestore().collection('category').doc(uid),
         imageSlidersRef: (shopId: string) => app.firestore().collection('shops').doc(shopId)
             .collection('imageSlider'),
         imageSliderRef: (shopId: string, imageSliderId: string) => app.firestore()

@@ -1,6 +1,6 @@
 import {Product} from './Product';
 
-export {Product, Variant, Option, Review, SelectedOption} from './Product';
+export {Product, Variant, Option, Review, SelectedOption, HasMap} from './Product';
 export {Cart, CartItem} from './Cart';
 export {Delivery} from './Delivery';
 export {Address, OrderStatus, PaymentType} from './Detail';

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext,useEffect} from "react";
 import {
     Image,
     TouchableOpacity
@@ -14,8 +14,13 @@ import Tabs from "./navigation/tabs";
 import { icons, COLORS, SIZES } from './constants';
 import { useFonts } from 'expo-font';
 import FirebaseProvider from "./context/FirebaseContext";
-import AuthProvider from "./context/AuthContext";
+import AuthProvider, {AuthContext} from "./context/AuthContext";
+import {LogBox, StyleSheet} from 'react-native';
 
+LogBox.ignoreLogs([
+    'Setting a timer',
+    'DevTools failed to load SourceMap',
+    'Remote debugger']);
 const theme = {
     ...DefaultTheme,
     colors: {
@@ -27,12 +32,17 @@ const theme = {
 const Stack = createStackNavigator();
 
 const App = () => {
+    const {localLogin} = useContext(AuthContext);
     const [loaded] = useFonts({
         "Roboto-Black" : require('./assets/fonts/Roboto-Black.ttf'),
         "Roboto-Bold" : require('./assets/fonts/Roboto-Bold.ttf'),
         "Roboto-Regular" : require('./assets/fonts/Roboto-Regular.ttf'),
 
     })
+    useEffect(() => {
+        localLogin()
+    }, []);
+
 
     if(!loaded){
     return null;

@@ -9,8 +9,9 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { images, icons, COLORS, FONTS, SIZES } from '../constants';
+import Background from "./Background";
 
- const ProductCart = ({productOwner, productName, rentPrice, location, data,id, duration, image,navigation })=> {
+ const ProductCart = ({ productName, rentPrice, location, data,id, duration, image,navigation ,onApprove, role})=> {
     return(
         <TouchableOpacity  onPress={() => { navigation.navigate("DestinationDetail", {data: data}) }}>
         <View
@@ -26,10 +27,9 @@ import { images, icons, COLORS, FONTS, SIZES } from '../constants';
             }, styles.shadow]}
         >
             <View style={{ flexDirection: 'row' }}>
-                <View style={styles.shadow , {flex: 1}}>
-                    {console.log('image is ', data.image)}
+                <View style={[styles.shadow ,{flex: 1}]}>
                     <Image
-                        source={{uri: data.image}}
+                        source={{uri: image}}
                         resizeMode="cover"
                         style={{
                             width: 70,
@@ -50,7 +50,23 @@ import { images, icons, COLORS, FONTS, SIZES } from '../constants';
 
                 </View>
                 </View>
+
             </View>
+            {role === 'ADMIN' &&  <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'space-between'}}>
+                <TouchableOpacity
+                    style={[styles.shadow, { marginTop: SIZES.padding * 2, width: '70%', height: 50, alignItems: 'center', justifyContent: 'center' }]}
+                    onPress={onApprove}
+                >
+                    <LinearGradient
+                        style={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center', borderRadius: 15 }}
+                        colors={['#46aeff', '#5884ff']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                    >
+                        <Text style={{ color: COLORS.white, ...FONTS.h3 }}>APPROVE</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
+            </View>}
         </View>
         </TouchableOpacity>
     )

@@ -87,7 +87,7 @@ const IconLabel = ({ icon, label }) => {
 }
 
 const DestinationDetail = ({ navigation, route }) => {
-const {productOwner, productName, rentPrice, location, data,id, duration, image, description, contactNumber} = route.params.data;
+const { productName, rentPrice, location, data,id, duration, imageName ,onApprove, role, description, contactNumber} = route.params.data.data;
     // Render
     const [showContactNumber, setShowContactNumber] = useState(false);
     return (
@@ -95,7 +95,7 @@ const {productOwner, productName, rentPrice, location, data,id, duration, image,
             {/* Header */}
             <View style={{ flex: 2 }}>
                 <Image
-                    source={{uri: image}}
+                    source={{uri: imageName}}
                     resizeMode="cover"
                     style={{
                         width: '100%',
@@ -117,7 +117,7 @@ const {productOwner, productName, rentPrice, location, data,id, duration, image,
                     <View style={{ flexDirection: 'row' }}>
                         <View style={styles.shadow}>
                             <Image
-                                source={{uri: image}}
+                                source={{uri: imageName}}
                                 resizeMode="cover"
                                 style={{
                                     width: 70,
@@ -211,7 +211,7 @@ const {productOwner, productName, rentPrice, location, data,id, duration, image,
                 <View style={{ marginTop: SIZES.padding, paddingHorizontal: SIZES.padding }}>
                     <Text style={{ ...FONTS.h2 }}>About</Text>
                     <Text style={{ marginTop: SIZES.radius, color: COLORS.gray, ...FONTS.body3 }}>
-                        Located at the Alps with an altitude of 1,702 meters. The ski area is the largest ski area in the world and is known as the best place to ski. Many other facilities, such as fitness center, sauna, steam room to star-rated restaurants.
+                        {description}
                     </Text>
                 </View>
             </View>
