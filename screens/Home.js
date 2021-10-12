@@ -63,6 +63,8 @@ const Home = ({ navigation }) => {
     const getFilteredPosts = async (name)=> {
         const categoriesSnapshot = await productsRef()
             .where('category', '==', name)
+            .where('approved', '==', true)
+
             .get();
         return   categoriesSnapshot.docs.map((category)=> {
             return {uid: category.id, data: category.data()}
@@ -135,6 +137,8 @@ const getAllPosts =async ()=> {
             </TouchableOpacity>
         )
     }
+
+
     if(loading){
         return <Spinner/>
     }

@@ -44,13 +44,15 @@ const App = () => {
     }, []);
 
 
-    if(!loaded){
+     if(!loaded){
     return null;
     }
+
+
     return (
         <NavigationContainer theme={theme}>
             <Stack.Navigator
-                initialRouteName={'Onboarding'}
+                initialRouteName={'Home'}
             >
                 {/* Screens */}
                 <Stack.Screen
